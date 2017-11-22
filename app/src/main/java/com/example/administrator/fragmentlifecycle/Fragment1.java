@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 public class Fragment1 extends Fragment {
     private static final String TAG = "Fragment1";
+    private View rootView;
 
     @Override
     public void onAttach(Context context) {
@@ -31,9 +32,21 @@ public class Fragment1 extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = View.inflate(getContext(), R.layout.fragment1_layout, null);
+        if (rootView == null) {
+            rootView = View.inflate(getContext(), R.layout.fragment1_layout, null);
+            Logger.e(TAG, "rootView--------------onCreate-------------------------------");
+        } else {
+            // 缓存的rootView需要判断是否已经被加过parent，如果有parent需要从parent删除，要不然会发生这个rootview已经有parent的错误。
+            ViewGroup parent = (ViewGroup) rootView.getParent();
+            if (parent != null)
+            {
+                parent.removeView(rootView);
+            }
+            Logger.e(TAG, "rootView else--------------onCreate-------------------------------");
+        }
+
         Logger.e(TAG, "onCreateView-------------------------------");
-        return view;
+        return rootView;
 
     }
 
